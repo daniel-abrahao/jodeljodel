@@ -7,12 +7,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model
@@ -96,8 +96,6 @@ class ModelBehavior extends Object {
  * @access public
  */
 	function afterFind(&$model, $results, $primary) { }
-	
-	function afterFindCascata(&$model, $results, $primary = false) { }
 
 /**
  * Before validate callback
@@ -165,6 +163,7 @@ class ModelBehavior extends Object {
 			return $this->{$method}($model);
 		}
 		$params = array_values($params);
+
 		switch (count($params)) {
 			case 1:
 				return $this->{$method}($model, $params[0]);
@@ -481,7 +480,7 @@ class BehaviorCollection extends Object {
  * @access public
  */
 	function trigger(&$model, $callback, $params = array(), $options = array()) {
-                if (empty($this->_attached)) {
+		if (empty($this->_attached)) {
 			return true;
 		}
 		$options = array_merge(array('break' => false, 'breakOn' => array(null, false), 'modParams' => false), $options);
@@ -491,8 +490,9 @@ class BehaviorCollection extends Object {
 			$name = $this->_attached[$i];
 			if (in_array($name, $this->_disabled)) {
 				continue;
-			}			
+			}
 			$result = $this->{$name}->dispatchMethod($model, $callback, $params);
+
 			if ($options['break'] && ($result === $options['breakOn'] || (is_array($options['breakOn']) && in_array($result, $options['breakOn'], true)))) {
 				return $result;
 			} elseif ($options['modParams'] && is_array($result)) {
